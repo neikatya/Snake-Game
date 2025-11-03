@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.neikatya.gamesnake.Direction;
 
-import java.util.UUID;
-
 @Embeddable
 @Getter
 @Setter

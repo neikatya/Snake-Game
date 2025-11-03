@@ -35,7 +35,6 @@ class AppleOnFieldTest {
         assertNotNull(result.getApple());
         assertNull(result.getVersion());
 
-        // Проверяем, что координаты в пределах поля
         assertTrue(result.getCoordinates().getX() >= 0 && result.getCoordinates().getX() < fieldSize);
         assertTrue(result.getCoordinates().getY() >= 0 && result.getCoordinates().getY() < fieldSize);
     }
@@ -46,11 +45,9 @@ class AppleOnFieldTest {
 
         AppleOnField result = AppleOnField.generateAppleOnField(fieldSize);
 
-        // Проверяем, что координаты генерируются в правильном диапазоне
         assertTrue(result.getCoordinates().getX() >= 0 && result.getCoordinates().getX() < fieldSize);
         assertTrue(result.getCoordinates().getY() >= 0 && result.getCoordinates().getY() < fieldSize);
 
-        // Проверяем, что satiety яблока в правильном диапазоне
         assertTrue(result.getApple().getSatiety() >= 1 && result.getApple().getSatiety() <= 3);
     }
 }

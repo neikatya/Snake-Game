@@ -1,6 +1,5 @@
 package ru.neikatya.gamesnake;
 
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.neikatya.gamesnake.entity.Field;
@@ -19,7 +18,6 @@ public interface FieldRepository extends JpaRepository<Field, UUID> {
 
     List<Field> findByInGameFalse();
 
-    // Подсчет активных игр (должен быть 0 или 1)
     long countByInGameTrue();
 
 }

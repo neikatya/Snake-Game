@@ -83,7 +83,6 @@ class SnakeOnFieldTest {
         snakeOnField.syncLengthWithCoordinates();
 
         assertEquals(2, snakeOnField.getOrderedCoordinates().size());
-        // Должны остаться координаты с наивысшим order (последние в списке)
         assertEquals(new Coordinates(2, 1), snakeOnField.getOrderedCoordinates().get(0).getCoordinate());
         assertEquals(new Coordinates(2, 2), snakeOnField.getOrderedCoordinates().get(1).getCoordinate());
     }
@@ -100,17 +99,11 @@ class SnakeOnFieldTest {
 
     @Test
     public void testAddFirstCoordinates() {
-        // ВАЖНО: список orderedCoordinates отсортирован по order DESC
-        // Первый элемент (getFirst()) имеет НАИБОЛЬШИЙ order
-        // В нашем тестовом списке: order = 0, -1, -2
-        // Первый элемент: order = 0 (координата (2, 0))
-
         Coordinates newCoordinates = new Coordinates(3, 2);
         snakeOnField.addFirstCoordinates(newCoordinates);
 
         assertEquals(4, snakeOnField.getOrderedCoordinates().size());
 
-        // Новая координата должна быть добавлена в конец с order = -1 (0 - 1 = -1)
         OrderedCoordinate addedCoordinate = snakeOnField.getOrderedCoordinates().get(3);
         assertEquals(newCoordinates, addedCoordinate.getCoordinate());
         assertEquals(-1, addedCoordinate.getOrder()); // 0 - 1 = -1

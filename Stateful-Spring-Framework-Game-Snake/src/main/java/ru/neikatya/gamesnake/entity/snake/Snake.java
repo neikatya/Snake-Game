@@ -35,7 +35,7 @@ public class Snake {
     private final int stepLength = 1;
 
     @Version
-    private Long version; // Добавьте это
+    private Long version;
 
     public static Snake createSnake() {
         Head head = Head.createHead();

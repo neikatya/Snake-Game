@@ -55,7 +55,6 @@ class FieldTest {
 
     @Test
     public void testMoveSnake() {
-        // Mock setup
         Vector mockVector = new Vector(1, 0);
         Coordinates mockHead = new Coordinates(5, 5);
         Coordinates mockNewHead = new Coordinates(6, 5);
@@ -65,17 +64,14 @@ class FieldTest {
         when(mockSnakeOnField.getFirstCoordinates()).thenReturn(mockHead);
         when(mockAppleOnField.getCoordinates()).thenReturn(new Coordinates(10, 10)); // Different coordinates
 
-        // Execute
         field.moveSnake();
 
-        // Verify
         verify(mockSnakeOnField).addFirstCoordinates(mockNewHead);
         verify(mockSnakeOnField).syncLengthWithCoordinates();
     }
 
     @Test
     public void testMoveSnake_EatApple() {
-        // Mock setup
         Vector mockVector = new Vector(1, 0);
         Coordinates mockHead = new Coordinates(5, 5);
         Coordinates mockNewHead = new Coordinates(6, 5);
@@ -85,24 +81,18 @@ class FieldTest {
         when(mockSnakeOnField.getFirstCoordinates()).thenReturn(mockHead);
         when(mockAppleOnField.getCoordinates()).thenReturn(mockNewHead); // Apple at new head position
 
-        // Mock для apple
         ru.neikatya.gamesnake.entity.apple.Apple mockApple = mock(ru.neikatya.gamesnake.entity.apple.Apple.class);
         when(mockAppleOnField.getApple()).thenReturn(mockApple);
 
-        // Mock для generateAppleOnField - возвращаем новое яблоко
         AppleOnField newApple = mock(AppleOnField.class);
         when(mockSnakeOnField.contains(any())).thenReturn(false);
 
-        // Execute
         field.moveSnake();
 
-        // Verify
         verify(mockSnakeOnField).eatApple(mockApple);
         verify(mockSnakeOnField).addFirstCoordinates(mockNewHead);
         verify(mockSnakeOnField).syncLengthWithCoordinates();
 
-        // После поедания яблока оно удаляется и добавляется новое
-        // Поэтому количество яблок должно остаться 1 (удалили старое, добавили новое)
         assertEquals(1, field.getApplesOnField().size());
     }
 
@@ -126,7 +116,7 @@ class FieldTest {
 
     @Test
     public void testCheckBorder_InvalidY() {
-        Coordinates invalidCoordinates = new Coordinates(5, 10); // size is 10, so Y=10 is invalid
+        Coordinates invalidCoordinates = new Coordinates(5, 10);
 
         RuntimeException exception = assertThrows(RuntimeException.class,
                 () -> field.checkBorder(invalidCoordinates));

@@ -38,16 +38,16 @@ public class SnakeOnField {
     private List<OrderedCoordinate> orderedCoordinates = new ArrayList<>();
 
     @Version
-    private Long version; // Добавьте это
+    private Long version;
 
     public static SnakeOnField createFrom(List<Coordinates> coordinates, Snake snake) {
         return new SnakeOnField(
                 null,
                 snake,
-                coordinates
+                new ArrayList<>(coordinates
                         .stream()
                         .map(coordinate -> OrderedCoordinate.createNew(coordinate, 0))
-                        .toList(),
+                        .toList()),
                 null
         );
 
@@ -63,7 +63,6 @@ public class SnakeOnField {
     }
 
     public void syncLengthWithCoordinates() {
-        // Удаляем лишние координаты хвоста
         while (snake.getLength() < orderedCoordinates.size()) {
             orderedCoordinates.removeFirst();
         }

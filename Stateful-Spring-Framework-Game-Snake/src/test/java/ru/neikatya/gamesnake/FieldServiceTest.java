@@ -1,4 +1,4 @@
-package ru.neikatya.gamesnake.service;
+package ru.neikatya.gamesnake;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -6,9 +6,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.neikatya.gamesnake.FieldRepository;
 import ru.neikatya.gamesnake.entity.Field;
 import ru.neikatya.gamesnake.entity.coordinates.Coordinates;
+import ru.neikatya.gamesnake.service.FieldService;
 
 import java.util.List;
 import java.util.Optional;

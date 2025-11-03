@@ -40,10 +40,9 @@ public class Field {
     private boolean inGame;
 
     @Version
-    private Long version; // Добавьте это
+    private Long version;
 
 
-    // Фабричный метод для создания нового игрового поля
     public static Field createNewGame(int size) {
         Snake snake = Snake.createSnake();
         // Создаем начальные координаты для змеи
@@ -72,10 +71,8 @@ public class Field {
         checkBorder(newHead);
         checkTail(newHead);
 
-        // Обновляем координаты змеи
         snakeOnField.addFirstCoordinates(newHead);
 
-        // Проверяем столкновение с яблоком
         Optional<AppleOnField> appleInNewCoordinates = applesOnField.stream()
                 .filter(appleOnField -> appleOnField.getCoordinates().equals(newHead))
                 .findFirst();
