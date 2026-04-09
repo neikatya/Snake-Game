@@ -1,0 +1,6 @@
+{
+  "name": "snake-tests",
+  "devDependencies": {
+    "@playwright/test": "latest"
+  }
+}
