@@ -1,0 +1,94 @@
+name: Spring Snake Game CI
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
+
+jobs:
+  # ─── JUnit + Testcontainers (PostgreSQL) + Selenium ───────────────────────
+  java-tests:
+    name: Java Tests (JUnit + Testcontainers + Selenium)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      # Docker уже доступен на ubuntu-latest — Testcontainers поднимет PostgreSQL сам
+      - name: Build and run Java tests
+        working-directory: Stateful-Spring-Framework-Game-Snake
+        run: mvn --batch-mode clean verify
+
+      - name: Upload Surefire report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-report
+          path: Stateful-Spring-Framework-Game-Snake/target/surefire-reports/
+          retention-days: 7
+
+  # ─── Playwright (frontend) ─────────────────────────────────────────────────
+  playwright-tests:
+    name: Playwright Frontend Tests
+    runs-on: ubuntu-latest
+    needs: java-tests   # запускаем после успешных Java тестов
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: Stateful-Spring-Framework-Game-Snake/frontend-tests/package-lock.json
+
+      - name: Install dependencies
+        working-directory: Stateful-Spring-Framework-Game-Snake/frontend-tests
+        run: npm ci
+
+      - name: Install Playwright browsers
+        working-directory: Stateful-Spring-Framework-Game-Snake/frontend-tests
+        run: npx playwright install --with-deps chromium
+
+      - name: Set up JDK 21 (для запуска Spring приложения)
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Start Spring application
+        working-directory: Stateful-Spring-Framework-Game-Snake
+        run: mvn --batch-mode spring-boot:run -DskipTests &
+
+      - name: Wait for app to start
+        run: |
+          echo "Waiting for Spring Boot to start..."
+          for i in {1..30}; do
+            curl -s http://localhost:8080 && echo "App is up!" && break
+            echo "Attempt $i/30..."
+            sleep 3
+          done
+
+      - name: Run Playwright tests
+        working-directory: Stateful-Spring-Framework-Game-Snake/frontend-tests
+        run: npx playwright test
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: Stateful-Spring-Framework-Game-Snake/frontend-tests/playwright-report/
+          retention-days: 7
