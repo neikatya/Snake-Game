@@ -39,9 +39,8 @@ jobs:
   playwright-tests:
     name: Playwright Frontend Tests
     runs-on: ubuntu-latest
-    needs: java-tests   # запускаем после успешных Java тестов
+    needs: java-tests
 
-    # Добавляем базу данных для этой джобы, так как mvn spring-boot:run требует активного подключения
     services:
       postgres:
         image: postgres:latest
@@ -89,15 +88,24 @@ jobs:
           mvn --batch-mode spring-boot:run -DskipTests \
           -Dspring.datasource.url=jdbc:postgresql://localhost:5432/snake_db \
           -Dspring.datasource.username=test_user \
-          -Dspring.datasource.password=test_pass &
+          -Dspring.datasource.password=test_pass > spring-boot.log 2>&1 &
 
       - name: Wait for app to start
         run: |
-          echo "Waiting for Spring Boot to start..."
-          for i in {1..30}; do
-            curl -sI http://127.0.0.1:8080 && echo "App is up!" && break
-            echo "Attempt $i/30..."
+          echo "Waiting for Spring Boot to start and respond with 200 OK..."
+          for i in {1..24}; do
+            if curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8080 | grep "200"; then
+              echo "App is fully up and running!"
+              sleep 5
+              break
+            fi
+            echo "Attempt $i/24: App is not ready yet..."
             sleep 5
+            if [ $i -eq 24 ]; then
+              echo "Error: Spring Boot failed to start in time. Check spring-boot.log"
+              cat Stateful-Spring-Framework-Game-Snake/spring-boot.log
+              exit 1
+            fi
           done
 
       - name: Run Playwright tests
@@ -111,3 +119,10 @@ jobs:
           name: playwright-report
           path: Stateful-Spring-Framework-Game-Snake/frontend-tests/playwright-report/
           retention-days: 7
+
+      - name: Upload Spring Boot log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spring-boot-log
+          path: Stateful-Spring-Framework-Game-Snake/spring-boot.log
