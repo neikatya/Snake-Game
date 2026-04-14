@@ -43,29 +43,37 @@ public class Game extends JPanel implements ActionListener {
     }
 
     @Override
-    protected void paintComponent(Graphics g){
+    protected void paintComponent(Graphics g) {
+        if (g == null) return;
+
         super.paintComponent(g);
-        if (inGame){
+
+        if (inGame) {
             try {
                 List<Coordinates> appleCoordinates = gameClient.getAppleCoordinates();
-                appleCoordinates.forEach(
-                        coordinates -> g.drawImage(appleImage, coordinates.x() * scaler,
-                                coordinates.y() * scaler, this)
-                );
+                if (appleCoordinates != null) {
+                    appleCoordinates.forEach(
+                            coordinates -> g.drawImage(appleImage, coordinates.x() * scaler,
+                                    coordinates.y() * scaler, this)
+                    );
+                }
 
                 List<Coordinates> snakeCoordinates = gameClient.getSnakeCoordinates();
-                snakeCoordinates.forEach(
-                        coordinates -> g.drawImage(dotImage, coordinates.x() * scaler,
-                                coordinates.y() * scaler, this)
-                );
+                if (snakeCoordinates != null) {
+                    snakeCoordinates.forEach(
+                            coordinates -> g.drawImage(dotImage, coordinates.x() * scaler,
+                                    coordinates.y() * scaler, this)
+                    );
+                }
             } catch (Exception e) {
-                System.err.println("Ошибка при получении данных: " + e.getMessage());
+                System.err.println("Ошибка отрисовки: " + e.getMessage());
                 endGame();
             }
         } else {
             String str = "Game Over";
             g.setColor(Color.white);
-            g.drawString(str, 125, gameClient.getSize() * 16 / 2);
+            int yPos = (gameClient != null) ? gameClient.getSize() * 16 / 2 : 150;
+            g.drawString(str, 125, yPos);
         }
     }
 

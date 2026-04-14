@@ -141,8 +141,10 @@ public class GameTest {
         when(mockGameClient.getSnakeCoordinates()).thenReturn(snakeCoords);
         when(mockGameClient.getSize()).thenReturn(20);
 
-        // Используем assertDoesNotThrow, чтобы NPE в отрисовке (из-за Graphics) не ронял тест
+        when(mockGraphics.create()).thenReturn(mockGraphics);
+
         assertDoesNotThrow(() -> game.paintComponent(mockGraphics));
+
         verify(mockGraphics, atLeastOnce()).drawImage(any(), anyInt(), anyInt(), any());
     }
 
@@ -150,9 +152,11 @@ public class GameTest {
     public void testPaintComponentGameOver() {
         game.endGame();
         when(mockGameClient.getSize()).thenReturn(20);
+        when(mockGraphics.create()).thenReturn(mockGraphics);
 
         assertDoesNotThrow(() -> game.paintComponent(mockGraphics));
-        verify(mockGraphics).drawString(contains("Game Over"), anyInt(), anyInt());
+        // Используем matches или eq для проверки строки
+        verify(mockGraphics).drawString(eq("Game Over"), anyInt(), anyInt());
     }
 
     @Test
