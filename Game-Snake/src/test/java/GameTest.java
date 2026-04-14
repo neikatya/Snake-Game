@@ -164,6 +164,8 @@ public class GameTest {
         when(mockGameClient.getAppleCoordinates()).thenThrow(new RuntimeException("Network error"));
         when(mockGameClient.getSize()).thenReturn(20);
 
+        when(mockGraphics.create()).thenReturn(mockGraphics);
+
         game.paintComponent(mockGraphics);
 
         assertFalse(game.getStateOfGame());
