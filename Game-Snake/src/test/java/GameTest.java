@@ -17,7 +17,6 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-// Устанавливаем мягкий режим, чтобы избежать UnnecessaryStubbingException в CI
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class GameTest {
 
@@ -28,7 +27,6 @@ public class GameTest {
 
     @BeforeEach
     public void setUp() {
-        // Базовый стаб, который нужен почти во всех тестах, где создается объект Game
         when(mockGameClient.isServerAvailable()).thenReturn(true);
         game = new Game(mockGameClient);
     }
@@ -155,7 +153,6 @@ public class GameTest {
         when(mockGraphics.create()).thenReturn(mockGraphics);
 
         assertDoesNotThrow(() -> game.paintComponent(mockGraphics));
-        // Используем matches или eq для проверки строки
         verify(mockGraphics).drawString(eq("Game Over"), anyInt(), anyInt());
     }
 

@@ -6,6 +6,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import java.time.Duration;
 
@@ -17,14 +18,23 @@ public class SnakeSeleniumTest {
 
     @BeforeEach
     void setUp() {
-        driver = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+
+        options.addArguments("--headless");
+
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+
+        options.addArguments("--window-size=1920,1080");
+
+        driver = new ChromeDriver(options);
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        driver.manage().window().maximize();
     }
 
     @Test
     @DisplayName("Полный сценарий: загрузка игры и проверка управления")
     void testFullGameCycle() throws InterruptedException {
+        // Логика остается прежней
         driver.get("http://localhost:8080");
 
         WebElement header = driver.findElement(By.tagName("h1"));
@@ -36,17 +46,12 @@ public class SnakeSeleniumTest {
 
         Actions action = new Actions(driver);
 
-        System.out.println("Начинаем имитацию управления...");
-
         action.sendKeys(Keys.ARROW_RIGHT).perform();
         Thread.sleep(800);
-
         action.sendKeys(Keys.ARROW_DOWN).perform();
         Thread.sleep(800);
-
         action.sendKeys(Keys.ARROW_LEFT).perform();
         Thread.sleep(800);
-
         action.sendKeys(Keys.ARROW_UP).perform();
         Thread.sleep(800);
 
